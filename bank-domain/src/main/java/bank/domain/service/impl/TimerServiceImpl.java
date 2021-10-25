@@ -16,7 +16,7 @@ public class TimerServiceImpl implements TimerService {
     // 尝试触发延迟的command
     @Override
     public List<Command> schedule(long timestamp) {
-        List<Command> commands = timer.schedule();
+        List<Command> commands = timer.schedule(timestamp);
         return commands;
     }
 

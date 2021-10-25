@@ -34,7 +34,7 @@ public class Timer {
         timeTable.add(command, delayAt);
     }
 
-    public List<Command> schedule() {
+    public List<Command> schedule(long timestamp) {
         return Collections.emptyList();
     }
 }
