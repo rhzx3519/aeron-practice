@@ -6,5 +6,5 @@ package bank.types;
  */
 public enum Currency {
     USD,
-    CNY
+    CNY;
 }

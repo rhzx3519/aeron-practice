@@ -3,6 +3,9 @@ package external.impl;
 import bank.domain.external.ExchangeRateService;
 import bank.types.Currency;
 import bank.types.ExchangeRate;
+import external.exchangerate.YahooForexService;
+import java.math.BigDecimal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,8 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 
+    @Autowired
+    private YahooForexService yahooForexService;
+
     @Override
     public ExchangeRate getExchangeRate(Currency source, Currency target) {
-        return null;
+        BigDecimal rate = yahooForexService.getExchangeRate(source.name(), target.name());
+        return new ExchangeRate(source, target, rate);
     }
 }

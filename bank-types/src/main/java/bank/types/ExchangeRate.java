@@ -1,6 +1,7 @@
 package bank.types;
 
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -10,11 +11,11 @@ import lombok.Data;
  * Domain primitive, 值对象
  */
 @Data
+@AllArgsConstructor
 public class ExchangeRate {
-
-    private BigDecimal rate;
     private Currency source;
     private Currency target;
+    private BigDecimal rate;
 
     /**
      * 根据汇率将source money 转换为 target money,
