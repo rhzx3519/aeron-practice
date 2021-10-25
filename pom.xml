@@ -15,8 +15,8 @@
         <module>bank-start</module>
         <module>bank-external</module>
         <module>bank-messaging</module>
-        <module>bank-web</module>
         <module>bank-persistence</module>
+        <module>bank-web</module>
     </modules>
 
     <properties>

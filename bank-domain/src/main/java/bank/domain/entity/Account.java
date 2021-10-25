@@ -8,6 +8,7 @@ import bank.types.AccountNumber;
 import bank.types.Currency;
 import bank.types.Money;
 import bank.types.UserId;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -15,6 +16,7 @@ import lombok.Data;
  * Date    2021/10/24
  */
 @Data
+@AllArgsConstructor
 public class Account {
     private Currency currency;
     private AccountNumber accountNumber;

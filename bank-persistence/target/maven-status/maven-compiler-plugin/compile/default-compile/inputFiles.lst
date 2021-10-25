@@ -1,4 +1,4 @@
-/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/repository/iml/AccountRepositoryImpl.java
-/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/persistence/AccountDO.java
-/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/persistence/AccountDao.java
-/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/persistence/AccountBuilder.java
+/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/bank/persistence/AccountDao.java
+/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/bank/repository/iml/AccountRepositoryImpl.java
+/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/bank/persistence/AccountDO.java
+/Volumes/Archive/Workbench/ddd-practice/bank-persistence/src/main/java/bank/persistence/AccountBuilder.java

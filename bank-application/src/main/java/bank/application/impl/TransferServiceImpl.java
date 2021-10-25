@@ -8,6 +8,8 @@ import bank.domain.messaging.AuditMessageProducer;
 import bank.domain.repository.AccountRepository;
 import bank.domain.service.AccountTransferService;
 import bank.domain.service.TimerService;
+import bank.domain.service.impl.AccountTransferServiceImpl;
+import bank.domain.service.impl.TimerServiceImpl;
 import bank.domain.types.AuditMessage;
 import bank.types.AccountNumber;
 import bank.types.Currency;
@@ -20,29 +22,25 @@ import bank.types.command.TransferArgu;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.Setter;
 
 /**
  * @author ZhengHao Lou
  * Date    2021/10/24
  */
-@Service
 public class TransferServiceImpl implements TransferService {
 
-    @Autowired
-    private AccountTransferService accountTransferService;
+    private AccountTransferService accountTransferService = new AccountTransferServiceImpl();
 
-    @Autowired
-    private TimerService timerService;
+    private TimerService timerService = new TimerServiceImpl();
 
-    @Autowired
+    @Setter
     private ExchangeRateService exchangeRateService;
 
-    @Autowired
+    @Setter
     private AccountRepository accountRepository;
 
-    @Autowired
+    @Setter
     private AuditMessageProducer auditMessageProducer;
 
     @Override
@@ -57,6 +55,8 @@ public class TransferServiceImpl implements TransferService {
 
         // 2) 业务逻辑，包含数据的查询、更新，运行在事务中，需要保证绝对一致性
         accountTransferService.transfer(sourceAccount, targetAccount, transferMoney, exchangeRate);
+        accountRepository.save(sourceAccount);
+        accountRepository.save(targetAccount);
 
         // 3) 收尾，e.g. 发送审计消息
         AuditMessage message = new AuditMessage(sourceUserId, sourceAccount.getAccountNumber(),

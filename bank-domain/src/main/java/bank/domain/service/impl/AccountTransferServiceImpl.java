@@ -4,9 +4,7 @@ import bank.domain.entity.Account;
 import bank.domain.service.AccountTransferService;
 import bank.types.ExchangeRate;
 import bank.types.Money;
-import org.springframework.stereotype.Service;
 
-@Service
 /**
  * @author ZhengHao Lou
  * Date    2021/10/24
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
  * Domain service
  */
 public class AccountTransferServiceImpl implements AccountTransferService {
+
 
     /**
      * Absolute consistency
@@ -24,10 +23,12 @@ public class AccountTransferServiceImpl implements AccountTransferService {
      */
     @Override
     public void transfer(Account sourceAccount, Account targetAccount, Money targetMoney, ExchangeRate exchangeRate) {
+        // 聚合内保证绝对一致性，这里需要开启事务+Lock
         Money sourceMoney = exchangeRate.exchangeTo(sourceAccount.getAvailable());
-        assert sourceMoney.compareTo(targetMoney) == 0;
+        assert sourceMoney.compareTo(targetMoney) >= 0;
 
-        sourceAccount.withdraw(sourceMoney);
+        sourceAccount.withdraw(exchangeRate.exchangeFrom(targetMoney));
         targetAccount.deposit(targetMoney);
+
     }
 }

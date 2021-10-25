@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ExchangeRate {
-    private Currency source;
-    private Currency target;
+    private Currency sourceCurrency;
+    private Currency targetCurrency;
     private BigDecimal rate;
 
     /**
@@ -24,6 +24,10 @@ public class ExchangeRate {
      * @return
      */
     public Money exchangeTo(Money source) {
-        return null;
+        return new Money(source.getAmount().multiply(rate), targetCurrency);
+    }
+
+    public Money exchangeFrom(Money target) {
+        return new Money(target.getAmount().divide(rate), sourceCurrency);
     }
 }

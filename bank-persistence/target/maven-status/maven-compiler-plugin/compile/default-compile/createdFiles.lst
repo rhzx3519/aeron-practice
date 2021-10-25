@@ -1,4 +1,4 @@
-persistence/AccountDao.class
-persistence/AccountDO.class
-repository/iml/AccountRepositoryImpl.class
-persistence/AccountBuilder.class
+bank/repository/iml/AccountRepositoryImpl.class
+bank/persistence/AccountDao.class
+bank/persistence/AccountBuilder.class
+bank/persistence/AccountDO.class
