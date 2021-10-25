@@ -81,8 +81,11 @@ public class TransferServiceImpl implements TransferService {
 
     // 系统外部通过改方法驱动触发执行延迟转账, e.g. 在另外的线程中通过传入时间来驱动
     @Override
-    public Result<Boolean> triggerDelayCommand(long nowInMillis) {
+    public Result<Boolean> triggerDelayedCommand(long nowInMillis) {
+        // 1) 取出可以执行的command
         List<Command> triggeredCommands = timerService.schedule(nowInMillis);
+
+        // 2) 依次执行command
         for (Command command : triggeredCommands) {
             switch (command.getOpType()) {
                 case TRANSFER:

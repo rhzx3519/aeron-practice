@@ -19,6 +19,6 @@ public interface TransferService {
                              String targetCurrency, long timestamp);
 
     // 触发延迟执行的转账
-    Result<Boolean> triggerDelayCommand(long nowInMillis);
+    Result<Boolean> triggerDelayedCommand(long nowInMillis);
 }
 
