@@ -5,12 +5,14 @@ import bank.application.types.Result;
 import bank.domain.entity.Account;
 import bank.domain.external.ExchangeRateService;
 import bank.domain.messaging.AuditMessageProducer;
+import bank.domain.messaging.CrossBankTransferMessageProducer;
 import bank.domain.repository.AccountRepository;
 import bank.domain.service.AccountTransferService;
 import bank.domain.service.TimerService;
 import bank.domain.service.impl.AccountTransferServiceImpl;
 import bank.domain.service.impl.TimerServiceImpl;
 import bank.domain.types.AuditMessage;
+import bank.domain.types.CrossBankReqMessage;
 import bank.types.AccountNumber;
 import bank.types.Currency;
 import bank.types.ExchangeRate;
@@ -22,6 +24,7 @@ import bank.types.command.TransferArgu;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Setter;
 
 /**
@@ -42,6 +45,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Setter
     private AuditMessageProducer auditMessageProducer;
+
+    @Setter
+    private CrossBankTransferMessageProducer crossBankTransferMessageProducer;
 
     @Override
     public Result<Boolean> transfer(UserId sourceUserId, AccountNumber targetAccountNumber, BigDecimal targetAmount,
@@ -97,6 +103,29 @@ public class TransferServiceImpl implements TransferService {
             }
         }
         return Result.ok(true);
+    }
+
+    @Override
+    public Result<Boolean> transferInterBank(UserId sourceUserId, AccountNumber targetAccountNumber,
+                                             BigDecimal targetAmount, String targetCurrency, String targetBank) {
+        // 1) 参数校验，准备业务逻辑的所需要的入参
+        final Money transferMoney = new Money(targetAmount, Currency.valueOf(targetCurrency));
+        Account sourceAccount = accountRepository.find(sourceUserId);
+        Account targetAccount = accountRepository.find(targetAccountNumber);
+
+        // 2) 发送跨行转账消息
+        Long transactionId = ThreadLocalRandom.current().nextLong();
+        CrossBankReqMessage message = new CrossBankReqMessage(transactionId, targetBank, sourceAccount.getAccountNumber(),
+            targetAccount.getAccountNumber(), transferMoney, new Date());
+        crossBankTransferMessageProducer.send(message);
+
+        return Result.ok(true);
+    }
+
+    @Override
+    public Result<Boolean> handleCrossBankTransferResult(Long transactionId, AccountNumber source,
+                                                         BigDecimal targetAmount, Boolean result) {
+        return null;
     }
 
 }

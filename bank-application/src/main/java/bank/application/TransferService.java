@@ -20,5 +20,12 @@ public interface TransferService {
 
     // 触发延迟执行的转账
     Result<Boolean> triggerDelayedCommand(long nowInMillis);
+
+    // 跨行转账
+    Result<Boolean> transferInterBank(UserId sourceUserId, AccountNumber targetAccountNumber, BigDecimal targetAmount,
+                                      String targetCurrency, String targetBank);
+
+    // 处理跨行转账结果
+    Result<Boolean> handleCrossBankTransferResult(Long transactionId, AccountNumber source, BigDecimal targetAmount, Boolean result);
 }
 
