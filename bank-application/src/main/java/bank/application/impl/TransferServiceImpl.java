@@ -33,19 +33,27 @@ import lombok.Setter;
 /**
  * @author ZhengHao Lou
  * Date    2021/10/24
+ *
+ * Application service
  */
 public class TransferServiceImpl implements TransferService {
 
+    // ---------------------------------------------------------------
+    // Domain service
     private AccountTransferService accountTransferService = new AccountTransferServiceImpl();
 
     private CommandService commandService = new CommandServiceImpl();
 
+    // ---------------------------------------------------------------
+    // Repository
     @Setter
     private CommandRepository commandRepository;
 
     @Setter
     private AccountRepository accountRepository;
 
+    // ---------------------------------------------------------------
+    // Infrastructure service
     @Setter
     private ExchangeRateService exchangeRateService;
 
