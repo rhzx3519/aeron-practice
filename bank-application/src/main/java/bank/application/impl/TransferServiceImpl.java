@@ -156,7 +156,7 @@ public class TransferServiceImpl implements TransferService {
         Account targetAccount = accountRepository.find(targetAccountNumber);
 
         // 2) 发送跨行转账消息
-        Long transactionId = ThreadLocalRandom.current().nextLong();
+        Long transactionId = idGeneratorService.id();
         CrossBankReqMessage message = new CrossBankReqMessage(transactionId, targetBank, sourceAccount.getAccountNumber(),
             targetAccount.getAccountNumber(), transferMoney, new Date());
         crossBankTransferMessageProducer.send(message);
