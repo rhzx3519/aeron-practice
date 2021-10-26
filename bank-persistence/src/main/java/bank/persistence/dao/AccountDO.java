@@ -1,4 +1,4 @@
-package bank.persistence;
+package bank.persistence.dao;
 
 import lombok.Data;
 

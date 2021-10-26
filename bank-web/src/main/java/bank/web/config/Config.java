@@ -4,7 +4,7 @@ import bank.application.TransferService;
 import bank.application.impl.TransferServiceImpl;
 import bank.external.impl.ExchangeRateServiceImpl;
 import bank.messaging.impl.AuditMessageProducerImpl;
-import bank.repository.iml.AccountRepositoryImpl;
+import bank.persistence.repo.AccountRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,8 @@ public class Config {
     public TransferService transferService() {
         TransferServiceImpl transferService = new TransferServiceImpl();
         transferService.setAccountRepository(accountRepository);
+        transferService.setExchangeRateService(exchangeRateService);
+        transferService.setAuditMessageProducer(auditMessageProducer);
         return transferService;
     }
 }

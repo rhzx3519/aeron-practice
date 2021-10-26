@@ -1,6 +1,6 @@
 package bank.web.controller;
 
-import bank.web.SpringBootApplicationTest;
+import bank.web.WebApplicationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Date    2021/10/25
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringBootApplicationTest.class)
+@SpringBootTest(classes = WebApplicationTest.class)
 public class TransferControllerTest {
 
     @Autowired
@@ -20,7 +20,7 @@ public class TransferControllerTest {
 
     @Test
     public void test1() {
-
+        System.out.println("hello");
     }
 
 }

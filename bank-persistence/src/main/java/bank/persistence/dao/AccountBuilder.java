@@ -1,4 +1,4 @@
-package bank.persistence;
+package bank.persistence.dao;
 
 import bank.domain.entity.Account;
 import org.springframework.stereotype.Service;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountBuilder {
 
-    public bank.persistence.AccountDO fromAccount(Account account) {
+    public AccountDO fromAccount(Account account) {
         return null;
     }
 
-    public Account toAccount(bank.persistence.AccountDO account) {
+    public Account toAccount(AccountDO account) {
         return null;
     }
 }

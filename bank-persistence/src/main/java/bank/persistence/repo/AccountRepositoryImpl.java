@@ -1,15 +1,15 @@
-package bank.repository.iml;
+package bank.persistence.repo;
 
 import bank.domain.entity.Account;
 import bank.domain.repository.AccountRepository;
+import bank.persistence.dao.AccountBuilder;
+import bank.persistence.dao.AccountDO;
+import bank.persistence.dao.AccountDao;
 import bank.types.AccountId;
 import bank.types.AccountNumber;
 import bank.types.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import bank.persistence.AccountBuilder;
-import bank.persistence.AccountDO;
-import bank.persistence.AccountDao;
 
 /**
  * @author ZhengHao Lou

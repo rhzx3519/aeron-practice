@@ -66,8 +66,6 @@ w
 Gbank-domain/src/main/java/bank/domain/repository/AccountRepository.java,2/d/2d112a90a721896f1f4bd29571cd7012d90a2122
 ‚
 Rbank-domain/src/test/java/bank/domain/service/impl/AccountTransferServiceTest.java,2/5/2582e9a73500a40cc0edd7959da3b7db70198068
-B
-bank-start/pom.xml,d/2/d2fe8368f0fc167f12dea37b9675efc400a30e7a
 t
 Dbank-application/src/main/java/bank/application/TransferService.java,c/4/c4e9bbcf0fa0f7bb3f0d56392fa56e0344e204b6
 w
@@ -86,9 +84,13 @@ Kbank-external/src/main/java/bank/external/impl/ExchangeRateServiceImpl.java,d/
 Vbank-external/src/main/java/bank/external/exchangerate/impl/YahooForexServiceImpl.java,6/1/61ec8b91180052c7fad821f255fb23d3b75bfb08
 }
 Mbank-external/src/main/java/bank/external/exchangerate/YahooForexService.java,6/6/6654c236cf7c6244aa182d5c4b5377624fbabee7
-i
-9bank-start/src/main/java/start/SpringBootApplication.java,3/3/3388b023047a35b3a6671a3ecce4b7e35c4fcc0b
 x
 Hbank-application/src/test/java/bank/application/ApplicationTestBase.java,a/7/a75eb4add52982f1e52eb36ae88f00c247660591
 E
 bank-web/bank-web.iml,1/3/137ea6cc01601d0788e1d18c18f2be8f6be1cb5d
+}
+Mbank-application/src/test/java/bank/application/impl/TransferServiceTest.java,9/3/93cb082f97349db9a19bf0e7a92d2b2f83d62cb3
+}
+Mbank-application/src/main/java/bank/application/impl/TransferServiceImpl.java,e/c/eca74c9f991ca81617e2825588014b6c7e3c2c2d
+7
+pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
