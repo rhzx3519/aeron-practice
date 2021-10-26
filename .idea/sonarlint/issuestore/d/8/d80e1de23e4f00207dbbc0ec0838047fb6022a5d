@@ -1,13 +1,0 @@
-
-/
-java:S2326"T is not used in the class.(ÌÜ
-N
-java:S1118":Add a private constructor to hide the implicit public one.(ÌÜ
-M
-java:S1172	"+Remove this unused method parameter "data".(ØÓÉ¤úÿÿÿÿ8ìÛè¬Ë/
-H
-java:S2440
-"&Remove this instantiation of "Result".(ˆš³Ÿùÿÿÿÿ8ìÛè¬Ë/
-€
-java:S1488
-"^Immediately return this expression instead of assigning it to the temporary variable "result".(ˆš³Ÿùÿÿÿÿ8îÛè¬Ë/

@@ -1,5 +1,8 @@
-package bank.types.command;
+package bank.domain.entity;
 
+import bank.types.command.Argument;
+import bank.types.command.CommandStatus;
+import bank.types.command.OpType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +14,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Command {
+    private Long commandId;
     private OpType opType;
     private Argument argument;
+    private CommandStatus status;
 }

@@ -17,6 +17,8 @@ public interface TransferService {
     // Delay
     Result<Boolean> transferDelayAt(UserId sourceUserId, AccountNumber targetAccountNumber, BigDecimal targetAmount,
                              String targetCurrency, long timestamp);
+    // 撤销延时转账
+    Result<String> cancelDelayedTransfer(UserId sourceUserId, Long commandId);
 
     // 触发延迟执行的转账
     Result<Boolean> triggerDelayedCommand(long nowInMillis);

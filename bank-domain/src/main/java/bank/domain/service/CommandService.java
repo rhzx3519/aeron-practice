@@ -1,6 +1,6 @@
 package bank.domain.service;
 
-import bank.types.command.Command;
+import bank.domain.entity.Command;
 import java.util.List;
 
 /**
@@ -8,9 +8,11 @@ import java.util.List;
  * Date    2021/10/25
  * Domain service
  */
-public interface TimerService {
+public interface CommandService {
 
     List<Command> schedule(long timestamp);
 
     void addDelayAt(Command command, long delayAt);
+
+    boolean del(long commandId);
 }

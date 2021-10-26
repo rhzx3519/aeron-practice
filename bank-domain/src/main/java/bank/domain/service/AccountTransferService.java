@@ -10,6 +10,7 @@ import bank.types.Money;
  */
 public interface AccountTransferService {
 
+    // 即时本地转账
     void transfer(Account sourceAccount, Account targetAccount, Money targetMoney, ExchangeRate exchangeRate);
 
 }

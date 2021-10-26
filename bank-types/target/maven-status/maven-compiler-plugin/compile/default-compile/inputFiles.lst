@@ -1,9 +1,9 @@
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/command/Argument.java
-/Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/command/Command.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/Money.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/AccountNumber.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/AccountId.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/command/OpType.java
+/Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/command/CommandStatus.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/exception/InsufficientFundsException.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/types/command/TransferArgu.java
 /Volumes/Archive/Workbench/ddd-practice/bank-types/src/main/java/bank/exception/InvalidCurrencyException.java

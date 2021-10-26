@@ -3,14 +3,17 @@ package bank.application.impl;
 import bank.application.TransferService;
 import bank.application.types.Result;
 import bank.domain.entity.Account;
+import bank.domain.entity.Command;
 import bank.domain.external.ExchangeRateService;
+import bank.domain.external.IdGeneratorService;
 import bank.domain.messaging.AuditMessageProducer;
 import bank.domain.messaging.CrossBankTransferMessageProducer;
 import bank.domain.repository.AccountRepository;
+import bank.domain.repository.CommandRepository;
 import bank.domain.service.AccountTransferService;
-import bank.domain.service.TimerService;
+import bank.domain.service.CommandService;
 import bank.domain.service.impl.AccountTransferServiceImpl;
-import bank.domain.service.impl.TimerServiceImpl;
+import bank.domain.service.impl.CommandServiceImpl;
 import bank.domain.types.AuditMessage;
 import bank.domain.types.CrossBankReqMessage;
 import bank.types.AccountNumber;
@@ -18,7 +21,7 @@ import bank.types.Currency;
 import bank.types.ExchangeRate;
 import bank.types.Money;
 import bank.types.UserId;
-import bank.types.command.Command;
+import bank.types.command.CommandStatus;
 import bank.types.command.OpType;
 import bank.types.command.TransferArgu;
 import java.math.BigDecimal;
@@ -35,13 +38,19 @@ public class TransferServiceImpl implements TransferService {
 
     private AccountTransferService accountTransferService = new AccountTransferServiceImpl();
 
-    private TimerService timerService = new TimerServiceImpl();
+    private CommandService commandService = new CommandServiceImpl();
+
+    @Setter
+    private CommandRepository commandRepository;
+
+    @Setter
+    private AccountRepository accountRepository;
 
     @Setter
     private ExchangeRateService exchangeRateService;
 
     @Setter
-    private AccountRepository accountRepository;
+    private IdGeneratorService idGeneratorService;
 
     @Setter
     private AuditMessageProducer auditMessageProducer;
@@ -69,40 +78,71 @@ public class TransferServiceImpl implements TransferService {
             targetAccount.getAccountNumber(), transferMoney, new Date());
         auditMessageProducer.send(message);
 
-        return Result.ok(true);
+        return Result.ok();
     }
 
     @Override
     public Result<Boolean> transferDelayAt(UserId sourceUserId, AccountNumber targetAccountNumber,
                                            BigDecimal targetAmount, String targetCurrency, long delayAt) {
-        // 1) 参数校验，准备业务逻辑的所需要的入参
+        // 1) 生成一条命令
         TransferArgu argu = new TransferArgu(sourceUserId, targetAccountNumber, targetAmount, targetCurrency);
-        Command command = new Command(OpType.TRANSFER, argu);
+        long commandId = idGeneratorService.id();
+        Command command = new Command(commandId, OpType.TRANSFER, argu, CommandStatus.PENDING);
+        commandRepository.save(command);
 
         // 2) 业务逻辑，添加到延迟队列中
-        timerService.addDelayAt(command, delayAt);
+        commandService.addDelayAt(command, delayAt);
 
-        return Result.ok(true);
+        return Result.ok();
+    }
+
+    @Override
+    public Result<String> cancelDelayedTransfer(UserId sourceUserId, Long commandId) {
+        // 1) 修改command的状态
+        Command command = commandRepository.find(commandId);
+        if (command == null) {
+            return Result.failed("Can not find record.");
+        }
+        command.setStatus(CommandStatus.CANCELED);
+        commandRepository.save(command);
+        // 2) 从timer中删除command
+        commandService.del(commandId);
+        return Result.ok();
     }
 
     // 系统外部通过改方法驱动触发执行延迟转账, e.g. 在另外的线程中通过传入时间来驱动
     @Override
     public Result<Boolean> triggerDelayedCommand(long nowInMillis) {
         // 1) 取出可以执行的command
-        List<Command> triggeredCommands = timerService.schedule(nowInMillis);
+        List<Command> triggeredCommands = commandService.schedule(nowInMillis);
 
         // 2) 依次执行command
         for (Command command : triggeredCommands) {
             switch (command.getOpType()) {
                 case TRANSFER:
                 default:
+                    // 判断命令是否有效
+                    Command cmdInDatabase = commandRepository.find(command.getCommandId());
+                    if (cmdInDatabase.getStatus() != CommandStatus.PENDING) {
+                        break;
+                    }
+
+                    // 执行转账
                     TransferArgu argu = (TransferArgu) command.getArgument();
-                    this.transfer(argu.getSourceUserId(), argu.getTargetAccountNumber(), argu.getTargetAmount(),
+                    Result<Boolean> result = this.transfer(argu.getSourceUserId(), argu.getTargetAccountNumber(), argu.getTargetAmount(),
                         argu.getTargetCurrency());
+
+                    // 保存转账结果
+                    if (result.isOk()) {
+                        cmdInDatabase.setStatus(CommandStatus.SUCCESS);
+                    } else {
+                        cmdInDatabase.setStatus(CommandStatus.FAILED);
+                    }
+                    commandRepository.save(command);
                     break;
             }
         }
-        return Result.ok(true);
+        return Result.ok();
     }
 
     @Override
@@ -119,7 +159,7 @@ public class TransferServiceImpl implements TransferService {
             targetAccount.getAccountNumber(), transferMoney, new Date());
         crossBankTransferMessageProducer.send(message);
 
-        return Result.ok(true);
+        return Result.ok();
     }
 
     @Override

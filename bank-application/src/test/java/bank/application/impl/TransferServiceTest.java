@@ -31,7 +31,7 @@ public class TransferServiceTest extends ApplicationTestBase {
     }
 
     @Test
-    public void test1() {
+    public void testTransfer() {
         UserId user1 = new UserId(1);
         AccountNumber accountNumber1 = new AccountNumber("001");
         BigDecimal targetAmount = BigDecimal.ONE;

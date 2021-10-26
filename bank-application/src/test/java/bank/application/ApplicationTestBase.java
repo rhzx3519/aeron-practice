@@ -4,9 +4,9 @@ import bank.domain.external.ExchangeRateService;
 import bank.domain.messaging.AuditMessageProducer;
 import bank.domain.repository.AccountRepository;
 import bank.domain.service.AccountTransferService;
-import bank.domain.service.TimerService;
+import bank.domain.service.CommandService;
 import bank.domain.service.impl.AccountTransferServiceImpl;
-import bank.domain.service.impl.TimerServiceImpl;
+import bank.domain.service.impl.CommandServiceImpl;
 import org.mockito.Mockito;
 
 /**
@@ -17,7 +17,7 @@ public class ApplicationTestBase {
 
     protected AccountTransferService accountTransferService = new AccountTransferServiceImpl();
 
-    protected TimerService timerService = new TimerServiceImpl();
+    protected CommandService commandService = new CommandServiceImpl();
 
     protected ExchangeRateService exchangeRateService = Mockito.mock(ExchangeRateService.class);
 

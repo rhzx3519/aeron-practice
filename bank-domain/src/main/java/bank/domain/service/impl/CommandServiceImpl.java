@@ -1,15 +1,15 @@
 package bank.domain.service.impl;
 
-import bank.domain.entity.Timer;
-import bank.domain.service.TimerService;
-import bank.types.command.Command;
+import bank.domain.entity.Command;
+import bank.domain.types.Timer;
+import bank.domain.service.CommandService;
 import java.util.List;
 
 /**
  * @author ZhengHao Lou
  * Date    2021/10/25
  */
-public class TimerServiceImpl implements TimerService {
+public class CommandServiceImpl implements CommandService {
 
     private final Timer timer = new Timer();
 
@@ -23,6 +23,11 @@ public class TimerServiceImpl implements TimerService {
     @Override
     public void addDelayAt(Command command, long delayAt) {
         timer.addDelayAt(command, delayAt);
+    }
+
+    @Override
+    public boolean del(long commandId) {
+        return timer.del(commandId) > 0;
     }
 
 

@@ -1,1 +1,3 @@
+bank/messaging/MessagingApplication.class
+bank/messaging/config/MessagingConfig.class
 bank/messaging/impl/AuditMessageProducerImpl.class
