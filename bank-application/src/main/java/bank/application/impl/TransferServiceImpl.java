@@ -10,6 +10,7 @@ import bank.domain.messaging.AuditMessageProducer;
 import bank.domain.messaging.CrossBankTransferMessageProducer;
 import bank.domain.repository.AccountRepository;
 import bank.domain.repository.CommandRepository;
+import bank.domain.repository.TransactionManager;
 import bank.domain.service.AccountTransferService;
 import bank.domain.service.CommandService;
 import bank.domain.service.impl.AccountTransferServiceImpl;
@@ -52,6 +53,9 @@ public class TransferServiceImpl implements TransferService {
     @Setter
     private AccountRepository accountRepository;
 
+    @Setter
+    private TransactionManager transactionManager;
+
     // ---------------------------------------------------------------
     // Infrastructure service
     @Setter
@@ -71,6 +75,7 @@ public class TransferServiceImpl implements TransferService {
                            String targetCurrency) {
         // 1) 参数校验，准备业务逻辑的所需要的入参
         final Money transferMoney = new Money(targetAmount, Currency.valueOf(targetCurrency));
+
         Account sourceAccount = accountRepository.find(sourceUserId);
         final ExchangeRate exchangeRate = exchangeRateService.getExchangeRate(sourceAccount.getCurrency(),
             transferMoney.getCurrency());
@@ -106,19 +111,26 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Result<String> cancelDelayedTransfer(UserId sourceUserId, Long commandId) {
-        // 1) 修改command的状态
-        Command command = commandRepository.find(commandId);
+        // 1) 校验参数
+        Account account = accountRepository.find(sourceUserId);
+        Command command = commandRepository.find(account.getAccountNumber(), commandId);
         if (command == null) {
             return Result.failed("Can not find record.");
         }
+        if (command.closed()) {
+            return Result.failed("Command has been closed.");
+        }
+
+        // 2) 修改command的状态
         command.setStatus(CommandStatus.CANCELED);
         commandRepository.save(command);
-        // 2) 从timer中删除command
+
+        // 3) 从timer中删除command
         commandService.del(commandId);
         return Result.ok();
     }
 
-    // 系统外部通过改方法驱动触发执行延迟转账, e.g. 在另外的线程中通过传入时间来驱动
+    // 系统外部通过该方法驱动触发执行延迟转账, e.g. 在另外的线程中通过传入时间来驱动
     @Override
     public Result<Boolean> triggerDelayedCommand(long nowInMillis) {
         // 1) 取出可以执行的command
@@ -129,25 +141,7 @@ public class TransferServiceImpl implements TransferService {
             switch (command.getOpType()) {
                 case TRANSFER:
                 default:
-                    // 判断命令是否有效
-                    Command cmdInDatabase = commandRepository.find(command.getCommandId());
-                    if (cmdInDatabase.getStatus() != CommandStatus.PENDING) {
-                        break;
-                    }
-
-                    // 执行转账
-                    TransferArgu argu = (TransferArgu) command.getArgument();
-                    Result<Boolean> result = this.transfer(argu.getSourceUserId(), argu.getTargetAccountNumber(), argu.getTargetAmount(),
-                        argu.getTargetCurrency());
-
-                    // 保存转账结果
-                    if (result.isOk()) {
-                        cmdInDatabase.setStatus(CommandStatus.SUCCESS);
-                    } else {
-                        cmdInDatabase.setStatus(CommandStatus.FAILED);
-                    }
-                    commandRepository.save(command);
-                    break;
+                    this.doDelayedTransfer(command);
             }
         }
         return Result.ok();
@@ -174,6 +168,27 @@ public class TransferServiceImpl implements TransferService {
     public Result<Boolean> handleCrossBankTransferResult(Long transactionId, AccountNumber source,
                                                          BigDecimal targetAmount, Boolean result) {
         return null;
+    }
+
+    private void doDelayedTransfer(Command command) {
+        // 1) 判断命令是否有效
+        Command cmdInDatabase = commandRepository.find(command.getCommandId());
+        if (cmdInDatabase.getStatus() != CommandStatus.PENDING) {
+            return;
+        }
+
+        // 2) 执行转账
+        TransferArgu argu = (TransferArgu) command.getArgument();
+        Result<Boolean> result = this.transfer(argu.getSourceUserId(), argu.getTargetAccountNumber(), argu.getTargetAmount(),
+            argu.getTargetCurrency());
+
+        // 3) 保存转账结果
+        if (result.isOk()) {
+            cmdInDatabase.setStatus(CommandStatus.SUCCESS);
+        } else {
+            cmdInDatabase.setStatus(CommandStatus.FAILED);
+        }
+        commandRepository.save(command);
     }
 
 }

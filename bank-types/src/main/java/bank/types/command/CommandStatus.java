@@ -9,4 +9,8 @@ public enum CommandStatus {
     CANCELED,
     FAILED,
     SUCCESS;
+
+    public boolean closed() {
+        return this.ordinal() >= 1;
+    }
 }

@@ -18,4 +18,8 @@ public class Command {
     private OpType opType;
     private Argument argument;
     private CommandStatus status;
+
+    public boolean closed() {
+        return status.closed();
+    }
 }

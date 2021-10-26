@@ -12,7 +12,7 @@ public class Result<T> {
     private boolean result;
     private T data;
 
-    private static final Result OK = new Result(true, null);
+    private static final Result<String> OK = new Result(true, "");
 
     public static Result ok() {
         return OK;
