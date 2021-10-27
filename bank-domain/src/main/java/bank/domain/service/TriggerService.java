@@ -8,7 +8,7 @@ import java.util.List;
  * Date    2021/10/25
  * Domain service
  */
-public interface CommandService {
+public interface TriggerService {
 
     List<Command> schedule(long timestamp);
 

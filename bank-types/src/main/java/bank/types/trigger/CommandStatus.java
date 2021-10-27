@@ -1,4 +1,4 @@
-package bank.types.command;
+package bank.types.trigger;
 
 /**
  * @author ZhengHao Lou
@@ -7,8 +7,7 @@ package bank.types.command;
 public enum CommandStatus {
     PENDING,
     CANCELED,
-    FAILED,
-    SUCCESS;
+    EXECUTED;
 
     public boolean closed() {
         return this.ordinal() >= 1;

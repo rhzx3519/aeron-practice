@@ -11,6 +11,7 @@ import bank.types.Currency;
 import bank.types.ExchangeRate;
 import bank.types.Money;
 import bank.types.UserId;
+import bank.types.dto.TransferParamsDto;
 import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,10 @@ public class TransferServiceTest extends ApplicationTestBase {
         doReturn(targetAccount).when(accountRepository).find(accountNumber1);
         doReturn(exchangeRate).when(exchangeRateService).getExchangeRate(Currency.CNY, Currency.USD);
 
-        transferService.transfer(user1, accountNumber1, targetAmount, targetCurrency);
+        TransferParamsDto transferParams = TransferParamsDto.builder().sourceUserId(user1).targetAccountNumber(accountNumber1).
+            targetAmount(targetAmount).targetCurrency(targetCurrency).build();
+
+        transferService.transfer(transferParams);
 
         assert sourceAccount.getAvailable().getAmount().compareTo(BigDecimal.valueOf(8)) == 0;
         assert targetAccount.getAvailable().getAmount().compareTo(BigDecimal.valueOf(1)) == 0;

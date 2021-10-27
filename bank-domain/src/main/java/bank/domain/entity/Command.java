@@ -1,8 +1,8 @@
 package bank.domain.entity;
 
-import bank.types.command.Argument;
-import bank.types.command.CommandStatus;
-import bank.types.command.OpType;
+import bank.types.trigger.Argument;
+import bank.types.trigger.CommandStatus;
+import bank.types.trigger.OpType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

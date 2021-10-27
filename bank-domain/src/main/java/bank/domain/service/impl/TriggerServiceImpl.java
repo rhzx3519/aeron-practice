@@ -2,14 +2,14 @@ package bank.domain.service.impl;
 
 import bank.domain.entity.Command;
 import bank.domain.types.Timer;
-import bank.domain.service.CommandService;
+import bank.domain.service.TriggerService;
 import java.util.List;
 
 /**
  * @author ZhengHao Lou
  * Date    2021/10/25
  */
-public class CommandServiceImpl implements CommandService {
+public class TriggerServiceImpl implements TriggerService {
 
     private final Timer timer = new Timer();
 

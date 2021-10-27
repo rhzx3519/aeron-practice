@@ -1,4 +1,4 @@
-package bank.types.command;
+package bank.types.trigger;
 
 /**
  * @author ZhengHao Lou

@@ -1,21 +1,27 @@
-package bank.types.command;
+package bank.types.dto;
 
 import bank.types.AccountNumber;
-import bank.types.Money;
 import bank.types.UserId;
 import java.math.BigDecimal;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * @author ZhengHao Lou
- * Date    2021/10/25
+ * Date    2021/10/27
+ *
+ * 转账请求入参
  */
 @Data
-@AllArgsConstructor
-public class TransferArgu implements Argument{
+@Builder
+public class TransferParamsDto {
+    @NonNull
     private UserId sourceUserId;
+    @NonNull
     private AccountNumber targetAccountNumber;
+    @NonNull
     private BigDecimal targetAmount;
+    @NonNull
     private String targetCurrency;
 }
