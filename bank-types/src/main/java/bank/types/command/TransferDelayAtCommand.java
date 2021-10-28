@@ -1,5 +1,6 @@
-package bank.types.dto;
+package bank.types.command;
 
+import bank.types.command.TransferCommand;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,9 +11,9 @@ import lombok.NonNull;
  */
 @Data
 @Builder
-public class TransferDelayAtParamsDto {
+public class TransferDelayAtCommand {
     @NonNull
-    private TransferParamsDto transferParams;
+    private TransferCommand transferCommand;
     @NonNull
     private Long timestamp;
 }

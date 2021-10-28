@@ -3,8 +3,8 @@ package bank.application;
 import bank.application.types.Result;
 import bank.types.AccountNumber;
 import bank.types.UserId;
-import bank.types.dto.TransferDelayAtParamsDto;
-import bank.types.dto.TransferParamsDto;
+import bank.types.command.TransferDelayAtCommand;
+import bank.types.command.TransferCommand;
 import bank.types.dto.TransferResultDto;
 import java.math.BigDecimal;
 
@@ -14,10 +14,10 @@ import java.math.BigDecimal;
  */
 public interface TransferService {
     // Immediately
-    TransferResultDto transfer(TransferParamsDto transferParams);
+    TransferResultDto transfer(TransferCommand transferParams);
 
     // Delay
-    Result<Boolean> transferDelayAt(TransferDelayAtParamsDto transferDelayAtParams);
+    Result<Boolean> transferDelayAt(TransferDelayAtCommand transferDelayAtParams);
 
     // 撤销延时转账
     Result<String> cancelDelayedTransfer(UserId sourceUserId, Long commandId);

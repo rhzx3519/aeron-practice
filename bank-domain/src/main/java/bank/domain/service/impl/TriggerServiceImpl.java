@@ -1,6 +1,6 @@
 package bank.domain.service.impl;
 
-import bank.domain.entity.Command;
+import bank.domain.entity.Event;
 import bank.domain.types.Timer;
 import bank.domain.service.TriggerService;
 import java.util.List;
@@ -15,19 +15,19 @@ public class TriggerServiceImpl implements TriggerService {
 
     // 尝试触发延迟的command
     @Override
-    public List<Command> schedule(long timestamp) {
-        List<Command> commands = timer.schedule(timestamp);
+    public List<Event> schedule(long timestamp) {
+        List<Event> commands = timer.schedule(timestamp);
         return commands;
     }
 
     @Override
-    public void addDelayAt(Command command, long delayAt) {
-        timer.addDelayAt(command, delayAt);
+    public void addDelayAt(Event event, long delayAt) {
+        timer.addDelayAt(event, delayAt);
     }
 
     @Override
-    public boolean del(long commandId) {
-        return timer.del(commandId) > 0;
+    public boolean del(long eventId) {
+        return timer.del(eventId) > 0;
     }
 
 

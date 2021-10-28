@@ -4,10 +4,10 @@ package bank.types.trigger;
  * @author ZhengHao Lou
  * Date    2021/10/26
  */
-public enum CommandStatus {
+public enum EventStatus {
     PENDING,
     CANCELED,
-    EXECUTED;
+    TRIGGERED;
 
     public boolean closed() {
         return this.ordinal() >= 1;

@@ -1,6 +1,6 @@
 package bank.domain.types;
 
-import bank.domain.entity.Command;
+import bank.domain.entity.Event;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,14 +17,14 @@ public class Timer {
 
     @AllArgsConstructor
     private static class Item {
-        Command command;
+        Event command;
         long delayAt;
     }
 
     private static class TimeTable {
         List<Item> items = new ArrayList<>();
 
-        void add(Command command, long delayAt) {
+        void add(Event command, long delayAt) {
             items.add(new Item(command, delayAt));
         }
 
@@ -33,7 +33,7 @@ public class Timer {
             Iterator<Item> iterator = items.iterator();
             for (; iterator.hasNext();) {
                 Item item = iterator.next();
-                if (item.command.getCommandId() == commandId) {
+                if (item.command.getEventId() == commandId) {
                     deleted++;
                     iterator.remove();
                 }
@@ -44,7 +44,7 @@ public class Timer {
 
     private TimeTable timeTable = new TimeTable();
 
-    public void addDelayAt(Command command, long delayAt) {
+    public void addDelayAt(Event command, long delayAt) {
         timeTable.add(command, delayAt);
     }
 
@@ -52,7 +52,7 @@ public class Timer {
         return timeTable.del(commandId);
     }
 
-    public List<Command> schedule(long timestamp) {
+    public List<Event> schedule(long timestamp) {
         return Collections.emptyList();
     }
 }

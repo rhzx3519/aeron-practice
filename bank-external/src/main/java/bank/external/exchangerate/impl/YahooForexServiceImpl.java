@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
 public class YahooForexServiceImpl implements YahooForexService {
     @Override
     public BigDecimal getExchangeRate(String source, String target) {
-        return null;
+        return BigDecimal.ONE;
     }
 }

@@ -1,6 +1,6 @@
 package bank.domain.service;
 
-import bank.domain.entity.Command;
+import bank.domain.entity.Event;
 import java.util.List;
 
 /**
@@ -10,10 +10,10 @@ import java.util.List;
  */
 public interface TriggerService {
 
-    List<Command> schedule(long timestamp);
+    List<Event> schedule(long timestamp);
 
-    void addDelayAt(Command command, long delayAt);
+    void addDelayAt(Event event, long delayAt);
 
-    boolean del(long commandId);
+    boolean del(long eventId);
 
 }

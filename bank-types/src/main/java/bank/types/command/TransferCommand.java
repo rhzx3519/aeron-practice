@@ -1,4 +1,4 @@
-package bank.types.dto;
+package bank.types.command;
 
 import bank.types.AccountNumber;
 import bank.types.UserId;
@@ -15,7 +15,7 @@ import lombok.NonNull;
  */
 @Data
 @Builder
-public class TransferParamsDto {
+public class TransferCommand {
     @NonNull
     private UserId sourceUserId;
     @NonNull

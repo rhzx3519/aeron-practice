@@ -4,13 +4,13 @@ import bank.application.TransferService;
 import bank.application.types.Result;
 import bank.application.types.assemblers.TransferResultAssembler;
 import bank.domain.entity.Account;
-import bank.domain.entity.Command;
+import bank.domain.entity.Event;
 import bank.domain.external.ExchangeRateService;
 import bank.domain.external.IdGeneratorService;
 import bank.domain.messaging.AuditMessageProducer;
 import bank.domain.messaging.CrossBankTransferMessageProducer;
 import bank.domain.repository.AccountRepository;
-import bank.domain.repository.CommandRepository;
+import bank.domain.repository.TriggerRepository;
 import bank.domain.service.AccountTransferService;
 import bank.domain.service.TriggerService;
 import bank.domain.service.impl.AccountTransferServiceImpl;
@@ -22,11 +22,11 @@ import bank.types.Currency;
 import bank.types.ExchangeRate;
 import bank.types.Money;
 import bank.types.UserId;
-import bank.types.trigger.CommandStatus;
+import bank.types.trigger.EventStatus;
 import bank.types.trigger.OpType;
-import bank.types.trigger.TransferArgu;
-import bank.types.dto.TransferDelayAtParamsDto;
-import bank.types.dto.TransferParamsDto;
+import bank.types.trigger.TransferEventArgs;
+import bank.types.command.TransferDelayAtCommand;
+import bank.types.command.TransferCommand;
 import bank.types.dto.TransferResultDto;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -50,7 +50,7 @@ public class TransferServiceImpl implements TransferService {
     // ---------------------------------------------------------------
     // Repository
     @Setter
-    private CommandRepository commandRepository;
+    private TriggerRepository triggerRepository;
 
     @Setter
     private AccountRepository accountRepository;
@@ -70,7 +70,7 @@ public class TransferServiceImpl implements TransferService {
     private CrossBankTransferMessageProducer crossBankTransferMessageProducer;
 
     @Override
-    public TransferResultDto transfer(TransferParamsDto transferParams) {
+    public TransferResultDto transfer(TransferCommand transferParams) {
         UserId sourceUserId = transferParams.getSourceUserId();
         AccountNumber targetAccountNumber = transferParams.getTargetAccountNumber();
         BigDecimal targetAmount = transferParams.getTargetAmount();
@@ -98,15 +98,15 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Result<Boolean> transferDelayAt(TransferDelayAtParamsDto transferDelayAtParams) {
+    public Result<Boolean> transferDelayAt(TransferDelayAtCommand transferDelayAtCommand) {
         // 1) 生成一条命令
-        TransferArgu argu = new TransferArgu(transferDelayAtParams.getTransferParams());
-        long commandId = idGeneratorService.id();
-        Command command = new Command(commandId, OpType.TRANSFER, argu, CommandStatus.PENDING);
-        commandRepository.save(command);
+        TransferEventArgs args = new TransferEventArgs(transferDelayAtCommand.getTransferCommand());
+        long eventId = idGeneratorService.id();
+        Event event = new Event(eventId, OpType.TRANSFER, args, EventStatus.PENDING);
+        triggerRepository.save(event);
 
         // 2) 业务逻辑，添加到延迟队列中
-        commandService.addDelayAt(command, transferDelayAtParams.getTimestamp());
+        commandService.addDelayAt(event, transferDelayAtCommand.getTimestamp());
 
         return Result.ok();
     }
@@ -115,7 +115,7 @@ public class TransferServiceImpl implements TransferService {
     public Result<String> cancelDelayedTransfer(UserId sourceUserId, Long commandId) {
         // 1) 校验参数
         Account account = accountRepository.find(sourceUserId);
-        Command command = commandRepository.find(account.getAccountNumber(), commandId);
+        Event command = triggerRepository.find(account.getAccountNumber(), commandId);
         if (command == null) {
             return Result.failed("Can not find record.");
         }
@@ -124,8 +124,8 @@ public class TransferServiceImpl implements TransferService {
         }
 
         // 2) 修改command的状态
-        command.setStatus(CommandStatus.CANCELED);
-        commandRepository.save(command);
+        command.setStatus(EventStatus.CANCELED);
+        triggerRepository.save(command);
 
         // 3) 从timer中删除command
         commandService.del(commandId);
@@ -136,14 +136,14 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Result<Boolean> triggerDelayedCommand(long nowInMillis) {
         // 1) 取出可以执行的command
-        List<Command> triggeredCommands = commandService.schedule(nowInMillis);
+        List<Event> triggeredEvents = commandService.schedule(nowInMillis);
 
         // 2) 依次执行command
-        for (Command command : triggeredCommands) {
-            switch (command.getOpType()) {
+        for (Event event : triggeredEvents) {
+            switch (event.getOpType()) {
                 case TRANSFER:
                 default:
-                    this.doDelayedTransfer(command);
+                    this.doDelayedTransfer(event);
             }
         }
         return Result.ok();
@@ -172,20 +172,20 @@ public class TransferServiceImpl implements TransferService {
         return null;
     }
 
-    private void doDelayedTransfer(Command command) {
+    private void doDelayedTransfer(Event event) {
         // 1) 判断命令是否有效
-        Command cmdInDatabase = commandRepository.find(command.getCommandId());
-        if (cmdInDatabase.getStatus() != CommandStatus.PENDING) {
+        Event cmdInDatabase = triggerRepository.find(event.getEventId());
+        if (cmdInDatabase.getStatus() != EventStatus.PENDING) {
             return;
         }
 
         // 2) 执行转账
-        TransferArgu argu = (TransferArgu) command.getArgument();
-        this.transfer(argu.getTransferParams());
+        TransferEventArgs args = (TransferEventArgs) event.getArgs();
+        this.transfer(args.getTransferCommand());
 
         // 3) 执行完毕
-        cmdInDatabase.setStatus(CommandStatus.EXECUTED);
-        commandRepository.save(command);
+        cmdInDatabase.setStatus(EventStatus.TRIGGERED);
+        triggerRepository.save(event);
     }
 
 }

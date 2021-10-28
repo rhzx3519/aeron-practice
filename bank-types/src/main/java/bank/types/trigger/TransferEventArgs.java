@@ -1,6 +1,6 @@
 package bank.types.trigger;
 
-import bank.types.dto.TransferParamsDto;
+import bank.types.command.TransferCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class TransferArgu implements Argument{
-    private TransferParamsDto transferParams;
+public class TransferEventArgs implements EventArgs {
+    private TransferCommand transferCommand;
 }

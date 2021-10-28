@@ -1,7 +1,7 @@
 package bank.domain.entity;
 
-import bank.types.trigger.Argument;
-import bank.types.trigger.CommandStatus;
+import bank.types.trigger.EventArgs;
+import bank.types.trigger.EventStatus;
 import bank.types.trigger.OpType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +13,11 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class Command {
-    private Long commandId;
+public class Event {
+    private Long eventId;
     private OpType opType;
-    private Argument argument;
-    private CommandStatus status;
+    private EventArgs args;
+    private EventStatus status;
 
     public boolean closed() {
         return status.closed();
