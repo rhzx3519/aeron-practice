@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-cluster0
+  labels:
+    app: order-cluster0
+spec:
+  containers:
+  - name: order-cluster
+    image: rhzx3519/order-cluster
+    args: [k8s, "0"]
+    ports:
+      - containerPort: 8000
+        protocol: UDP
+      - containerPort: 9001
+        protocol: UDP
+      - containerPort: 9002
+        protocol: UDP
+      - containerPort: 9003
+        protocol: UDP
+      - containerPort: 9004
+        protocol: UDP
+      - containerPort: 9005
+        protocol: UDP
+      - containerPort: 9006
+        protocol: UDP
+      - containerPort: 9010
+        protocol: UDP
+      - containerPort: 9021
+        protocol: UDP
+      - containerPort: 9022
+        protocol: UDP
+    volumeMounts:
+    - name: shm
+      mountPath: /dev/shm
+  volumes:
+  - name: shm
+    emptyDir:
+      medium: Memory

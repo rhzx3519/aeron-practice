@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-gateway
+  labels:
+    app: order-gateway
+spec:
+  containers:
+  - name: order-gateway
+    image: rhzx3519/order-gateway
+    args: ["k8s"]
+    ports:
+      - containerPort: 8000
+        protocol: UDP
+      - name: egress-port
+        containerPort: 8020
+        protocol: UDP
+      - containerPort: 9010
+        protocol: UDP
+    volumeMounts:
+    - name: shm
+      mountPath: /dev/shm
+  volumes:
+  - name: shm
+    emptyDir:
+      medium: Memory

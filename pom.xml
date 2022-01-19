@@ -17,6 +17,8 @@
         <module>bank-messaging</module>
         <module>bank-persistence</module>
         <module>bank-web</module>
+        <module>bank-gateway</module>
+        <module>bank-cluster</module>
     </modules>
 
     <properties>

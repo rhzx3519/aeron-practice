@@ -9,3 +9,6 @@ target
 ./bank-domain/target/
 ./bank-application/target/
 ./bank-web/target/
+./bank-cluster/aeron-cluster-0
+./bank-cluster/aeron-cluster-1
+./aeron-cluster-0
